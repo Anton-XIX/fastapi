@@ -8,7 +8,6 @@ import logging
 
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
-print(dir())
 from app.db.session import SessionLocal
 from app.initial_data import create_initial_data
 
@@ -38,6 +37,7 @@ def test_connection() -> None:
 def main() -> None:
     logger.info("Initializing service")
     test_connection()
+
     create_initial_data()
     logger.info("Service finished initializing")
 

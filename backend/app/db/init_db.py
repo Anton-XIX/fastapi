@@ -3,10 +3,10 @@ import logging
 from sqlalchemy.orm import Session
 
 from core.services.password_service import pass_service
-from crud import CrudUser
+from crud import CrudUser, CRUDUserProfile
 from db import base  # noqa: F401
 from schemas.user import UserCreate
-
+from schemas.user_profile import UserProfileCreate
 logger = logging.getLogger(__name__)
 
 
@@ -24,18 +24,22 @@ def init_db(db: Session) -> None:
     user = CrudUser.get_by_email(db, email=email)
     password = "qwerty"
     salt = pass_service.generate_salt()
-    hashed_passowrd = pass_service.hash_password(password=password, salt=salt)
+    hashed_password = pass_service.hash_password(password=password, salt=salt)
     if not user:
         user_in = UserCreate(
-            first_name="Anton",
-            last_name="Kiryakou",
             email=email,
             is_superuser=True,
-            password=hashed_passowrd,
+            password=hashed_password,
             salt=salt,
         )
-        user = CrudUser.create(db=db, obj_in=user_in)  # noqa: F841
+        user = CrudUser.create(db=db, obj_in=user_in)
+        user_profile = UserProfileCreate(
+            first_name='Anton',
+        last_name = 'Kiryakou',
+        birth_date = None,
+        user_uuid = user.uuid)
+        user_profile = CRUDUserProfile.create(db=db, obj_in=user_profile)
     else:
-        logger.warning(
+        logger.info(
             "Skipping creating superuser. User with email " f"{email} already exists. "
         )

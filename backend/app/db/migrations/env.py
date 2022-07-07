@@ -11,7 +11,6 @@ from sqlalchemy import engine_from_config, pool
 # we're appending the app directory to our path here so that we can import config easily
 PROJECT_DIR = pathlib.Path(__file__).resolve().parents[3]
 sys.path.append(str(PROJECT_DIR))
-print(sys.path)
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -21,7 +20,6 @@ config = context.config
 fileConfig(config.config_file_name)
 
 from app.core.config import DATABASE_URL
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
@@ -66,17 +64,14 @@ def run_migrations_online():
     """
     configuration = config.get_section(config.config_ini_section)
     configuration["sqlalchemy.url"] = get_url()
-    connectable = engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    print(get_url())
+    engine = engine_from_config(
+        configuration, prefix='sqlalchemy.')
 
-    with connectable.connect() as connection:
+    with engine.connect() as connection:
         context.configure(
             connection=connection,
-            target_metadata=target_metadata,
-            compare_type=True,
+            target_metadata=target_metadata
         )
 
         with context.begin_transaction():
