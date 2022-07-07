@@ -1,30 +1,28 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, constr
+from fastapi_camelcase import CamelModel
+from pydantic import EmailStr, constr
+
+from app.core.utils import to_snake_case
+from app.models.user import User
+from app.schemas.user_profile import UserProfileInfo, UserProfileRegister
 
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+class UserLogin(CamelModel):
+    email: EmailStr = None
+    password: str = None
 
 
-class UserBase(BaseModel):
-    first_name: Optional[str]
-    last_name: Optional[str]
+class UserBase(CamelModel):
     email: Optional[EmailStr] = None
     is_superuser: bool = False
 
 
-class UserPasswordUpdate(BaseModel):
-    """
-    Users can change their password
-    """
-
+class UserPasswordUpdate(CamelModel):
     password: constr(min_length=7, max_length=100)
     salt: str
 
 
-# Properties to receive via API on creation
 class UserCreate(UserBase):
     email: EmailStr
     password: str
@@ -43,6 +41,13 @@ class UserInDBBase(UserBase):
         orm_mode = True
 
 
-# Additional properties to return via API
-class User(UserInDBBase):
-    pass
+class UserRegister(UserLogin):
+    user_profile: UserProfileRegister
+
+
+class UserInfo(UserBase):
+    profile: UserProfileInfo or None = None
+
+    class Config:
+        orm_mode = True
+        orig_model = User

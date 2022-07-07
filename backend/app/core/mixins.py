@@ -14,8 +14,14 @@ class DateTimeModelMixinMixin(object):
 
 
 class IdModelMixinMixin(object):
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, unique=True)
 
 
 class UuidModelMixinMixin(object):
-    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    uuid = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        index=True,
+        unique=True,
+    )

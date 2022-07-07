@@ -11,7 +11,7 @@ services:
     env_file:
       - backend/.envs/.env.dev
     ports:
-      - 8000:8000
+      - "8000:8000"
     depends_on:
       - db
   db:
@@ -21,6 +21,6 @@ services:
     env_file:
       - backend/.envs/.env.dev
     ports:
-      - 5432:5432
+      - "5432:5432"
 volumes:
     postgres_data:
